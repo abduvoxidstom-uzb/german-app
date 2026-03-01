@@ -3,164 +3,137 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deutsch Pro - Daily Goal</title>
+    <title>Deutsch Pro - Abduvoxid</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --de-green: #28a745; --de-gold: #FFCC00; --de-black: #2c3e50; --de-red: #dc3545; --bg: #f0f2f5; }
+        :root { --de-green: #28a745; --de-gold: #FFCC00; --de-black: #2c3e50; --bg: #f0f2f5; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
         
-        .tabs { display: flex; gap: 8px; width: 100%; max-width: 400px; margin-bottom: 15px; }
-        .tabs button { flex: 1; padding: 10px; border: none; border-radius: 10px; background: #dee2e6; font-weight: bold; cursor: pointer; }
-        .tabs button.active { background: var(--de-black); color: white; }
+        /* Юқориги режа блоки */
+        .goal-container { background: white; width: 100%; max-width: 380px; padding: 15px; border-radius: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: center; border: 1px solid #ddd; }
+        .goal-btns { display: flex; gap: 5px; margin: 10px 0; }
+        .goal-btns button { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 10px; background: #fff; font-size: 13px; font-weight: bold; cursor: pointer; }
+        .goal-btns button.active { background: var(--de-black); color: white; border-color: var(--de-black); }
 
-        /* Қийинлик даражаси блоки */
-        .goal-selector { background: white; width: 100%; max-width: 370px; padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
-        .goal-btns { display: flex; gap: 5px; margin-top: 10px; }
-        .goal-btns button { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa; font-size: 12px; font-weight: bold; cursor: pointer; }
-        .goal-btns button.active { background: var(--de-gold); border-color: var(--de-black); }
+        .progress-box { background: #eee; height: 12px; border-radius: 20px; overflow: hidden; margin: 10px 0; position: relative; }
+        .progress-fill { background: linear-gradient(90deg, #28a745, #85d08b); width: 0%; height: 100%; transition: 0.4s; }
 
-        .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: var(--de-green); width: 0%; transition: 0.5s; }
+        /* Даража танлаш */
+        .level-btns { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 15px; }
+        .level-btns button { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid var(--de-black); background: white; font-weight: 900; cursor: pointer; }
+        .level-btns button.active { background: var(--de-black); color: white; }
 
-        /* Карточка ва бошқалар */
-        .level-selector { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 15px; }
-        .level-selector button { flex: 1; padding: 12px; border: 2px solid var(--de-black); border-radius: 12px; background: white; font-weight: 800; cursor: pointer; }
-        .level-selector button.active { background: var(--de-black); color: white; }
-
-        .card { background: white; width: 100%; max-width: 360px; border-radius: 25px; padding: 40px 20px; box-shadow: 0 12px 28px rgba(0,0,0,0.12); text-align: center; border-bottom: 8px solid var(--de-gold); position: relative; }
-        h1 { font-size: 38px; color: var(--de-black); margin: 15px 0; }
-        .uzbek { font-size: 24px; color: #333; margin-top: 20px; display: none; border-top: 2px dashed #eee; padding-top: 15px; font-weight: 900; }
+        /* Асосий Карточка */
+        .card { background: white; width: 100%; max-width: 360px; border-radius: 25px; padding: 40px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; border-bottom: 8px solid var(--de-gold); margin-top: 10px; cursor: pointer; }
+        h1 { font-size: 42px; color: var(--de-black); margin: 15px 0; font-weight: 800; }
+        .uzbek-bold { font-size: 28px; color: #000; margin-top: 20px; display: none; border-top: 3px solid #f0f0f0; padding-top: 15px; font-weight: 900; text-transform: uppercase; }
         
-        .audio-btn { background: #f1f3f5; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 1px solid #ddd; cursor: pointer; }
-        .next-btn { background: var(--de-green); color: white; border: none; padding: 18px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        .audio-icon { font-size: 30px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; cursor: pointer; }
+
+        .next-btn { background: var(--de-green); color: white; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 18px; font-size: 20px; font-weight: bold; margin-top: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(40,167,69,0.4); }
         
-        .congrats { color: var(--de-green); font-weight: bold; display: none; margin-top: 10px; }
+        #congrats { color: var(--de-green); font-weight: 900; font-size: 18px; display: none; margin-top: 10px; animation: bounce 0.5s infinite alternate; }
+        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.05); } }
     </style>
 </head>
 <body>
 
-    <div class="tabs">
-        <button onclick="showSection('learn')" id="tabLearn" class="active">📖 Ўрганиш</button>
-        <button onclick="showSection('game')" id="tabGame">🎮 Ўйин</button>
-    </div>
-
-    <div class="goal-selector" id="goalBlock">
-        <span style="font-size: 14px; font-weight: bold;">Кунлик режани танланг:</span>
+    <div class="goal-container">
+        <div style="font-weight: 800; font-size: 15px;">БУГУНГИ МАҚСАД</div>
         <div class="goal-btns">
-            <button onclick="setGoal(6, this)" id="goal6">Енгил (6)</button>
-            <button onclick="setGoal(20, this)" id="goal20">Ўрта (20)</button>
-            <button onclick="setGoal(40, this)" id="goal40">Қийин (40)</button>
+            <button onclick="changeGoal(6, this)" id="g6" class="active">ОСОН (6)</button>
+            <button onclick="changeGoal(20, this)" id="g20">ЎРТА (20)</button>
+            <button onclick="changeGoal(40, this)" id="g40">ҚИЙИН (40)</button>
         </div>
-        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-        <div style="font-size: 11px; margin-top: 5px; color: #666;">
-            Прогресс: <span id="progressText">0</span> / <span id="goalText">6</span>
+        <div class="progress-box"><div class="progress-fill" id="pFill"></div></div>
+        <div style="font-weight: bold; font-size: 13px;">
+            Прогресс: <span id="pCount">0</span> / <span id="pGoal">6</span>
         </div>
-        <div class="congrats" id="congratsMsg">🎉 Бугунги режа бажарилди!</div>
+        <div id="congrats">🎉 БУГУНГИ РЕЖА БАЖАРИЛДИ!</div>
     </div>
 
-    <div id="learnSection" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="level-selector">
-            <button onclick="setLevel('A1')" id="btnA1" class="active">A1</button>
-            <button onclick="setLevel('A2')" id="btnA2">A2</button>
-        </div>
-        
-        <div class="card" onclick="showTranslation()">
-            <button class="audio-btn" onclick="playAudio(event)">🔊</button>
-            <h1 id="deWordDisplay">Lernen</h1>
-            <div class="uzbek" id="uzWordDisplay">ЎРГАНМОҚ</div>
-            <p id="hintText" style="color: #adb5bd; font-size: 12px; margin-top: 15px;">Таржима учун босинг</p>
-        </div>
-        
-        <button class="next-btn" onclick="handleNext()">Кейинги сўз ➔</button>
+    <div class="level-btns">
+        <button onclick="setLevel('A1')" id="lA1" class="active">A1</button>
+        <button onclick="setLevel('A2')" id="lA2">A2</button>
     </div>
 
-    <div id="gameSection" style="width: 100%; display: none; flex-direction: column; align-items: center;">
-        <div style="background:white; padding:30px; border-radius:20px; text-align:center; width:90%;">
-            <h2 id="quizQ">...</h2>
-            <div id="quizOptions" style="display:grid; gap:10px;"></div>
-        </div>
+    <div class="card" onclick="showUz()">
+        <div class="audio-icon" onclick="speakDE(event)">🔊</div>
+        <h1 id="deWord">Lernen</h1>
+        <div class="uzbek-bold" id="uzWord">ЎРГАНМОҚ</div>
+        <p id="hint" style="color: #999; margin-top: 10px;">Таржимани кўриш учун босинг</p>
     </div>
+
+    <button class="next-btn" onclick="nextWord()">КЕЙИНГИ СЎЗ ➔</button>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        const dictionary = {
+        const words = {
             'A1': [
                 {g: "Brot", u: "NON"}, {g: "Wasser", u: "SUV"}, {g: "Milch", u: "SUT"},
-                {g: "Schule", u: "MAKTAB"}, {g: "Lehrer", u: "O'QITUVCHI"}, {g: "Buch", u: "KITOB"}
+                {g: "Schule", u: "MAKTAB"}, {g: "Lehrer", u: "O'QITUVCHI"}, {g: "Essen", u: "YEMOQ"}
             ],
             'A2': [
                 {g: "Verstehen", u: "TUSHUNMOQ"}, {g: "Vergessen", u: "UNUTMOQ"}, {g: "Wichtig", u: "MUHIM"}
             ]
         };
 
-        let dailyGoal = 6;
-        let wordsSeen = 0;
-        let currentLevel = 'A1';
+        let currentGoal = 6;
+        let count = 0;
+        let level = 'A1';
 
-        function setGoal(num, btn) {
-            dailyGoal = num;
+        function changeGoal(n, btn) {
+            currentGoal = n;
             document.querySelectorAll('.goal-btns button').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-            document.getElementById('goalText').innerText = num;
+            document.getElementById('pGoal').innerText = n;
             updateProgress();
         }
 
-        function handleNext() {
-            wordsSeen++;
-            updateProgress();
-            nextWord();
+        function setLevel(l) {
+            level = l;
+            document.querySelectorAll('.level-btns button').forEach(b => b.classList.remove('active'));
+            document.getElementById('l' + l).classList.add('active');
+            nextWord(false);
+        }
+
+        function showUz() {
+            document.getElementById('uzWord').style.display = 'block';
+            document.getElementById('hint').style.display = 'none';
+        }
+
+        function nextWord(increment = true) {
+            if(increment) {
+                count++;
+                updateProgress();
+            }
+            let list = words[level];
+            let item = list[Math.floor(Math.random() * list.length)];
+            document.getElementById('deWord').innerText = item.g;
+            document.getElementById('uzWord').innerText = item.u;
+            document.getElementById('uzWord').style.display = 'none';
+            document.getElementById('hint').style.display = 'block';
         }
 
         function updateProgress() {
-            let percent = (wordsSeen / dailyGoal) * 100;
-            if(percent > 100) percent = 100;
-            document.getElementById('progressFill').style.width = percent + "%";
-            document.getElementById('progressText').innerText = wordsSeen;
-            
-            if(wordsSeen >= dailyGoal) {
-                document.getElementById('congratsMsg').style.display = 'block';
-            }
+            let p = (count / currentGoal) * 100;
+            document.getElementById('pFill').style.width = Math.min(p, 100) + "%";
+            document.getElementById('pCount').innerText = count;
+            if(count >= currentGoal) document.getElementById('congrats').style.display = 'block';
         }
 
-        function setLevel(lvl) {
-            currentLevel = lvl;
-            document.querySelectorAll('.level-selector button').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn' + lvl).classList.add('active');
-            nextWord();
-        }
-
-        function showTranslation() {
-            document.getElementById('uzWordDisplay').style.display = 'block';
-            document.getElementById('hintText').style.display = 'none';
-        }
-
-        function nextWord() {
-            let list = dictionary[currentLevel];
-            let item = list[Math.floor(Math.random() * list.length)];
-            document.getElementById('deWordDisplay').innerText = item.g;
-            document.getElementById('uzWordDisplay').innerText = item.u;
-            document.getElementById('uzWordDisplay').style.display = 'none';
-            document.getElementById('hintText').style.display = 'block';
-        }
-
-        function playAudio(event) {
+        function speakDE(event) {
             event.stopPropagation();
-            let text = document.getElementById('deWordDisplay').innerText;
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'de-DE';
-            window.speechSynthesis.speak(utterance);
+            let text = document.getElementById('deWord').innerText;
+            // Google TTS API орқали овоз бериш
+            let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=de&client=tw-ob`);
+            audio.play();
         }
 
-        function showSection(sec) {
-            document.getElementById('learnSection').style.display = sec === 'learn' ? 'flex' : 'none';
-            document.getElementById('gameSection').style.display = sec === 'game' ? 'flex' : 'none';
-            document.getElementById('goalBlock').style.display = sec === 'learn' ? 'block' : 'none';
-        }
-
-        nextWord();
-        document.getElementById('goal6').classList.add('active');
+        // Илк сўз
+        nextWord(false);
     </script>
 </body>
 </html>
