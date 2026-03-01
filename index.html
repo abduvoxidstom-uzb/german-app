@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Немисча Луғат</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: sans-serif; background: #f4f4f9; text-align: center; padding: 20px; }
+        .card { background: white; border-radius: 15px; padding: 40px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-top: 50px; cursor: pointer; }
+        .level-badge { background: #ff9800; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; }
+        h1 { font-size: 32px; color: #333; margin: 20px 0; }
+        p { color: #666; font-size: 18px; }
+        .btn { background: #2196F3; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 18px; margin-top: 20px; width: 100%; }
+    </style>
+</head>
+<body>
+    <span class="level-badge" id="levelDisplay">A1.1 - 1-кун</span>
+    <div class="card" onclick="flipCard()">
+        <h1 id="wordDisplay">Hallo</h1>
+        <p id="translationDisplay" style="visibility: hidden;">Салом</p>
+    </div>
+    <button class="btn" onclick="nextWord()">Кейинги сўз →</button>
+
+    <script>
+        let tg = window.Telegram.WebApp;
+        tg.expand(); // Иловани тўлиқ экранга ёйиш
+
+        const words = [
+            {g: "Hallo", u: "Салом", l: "A1.1"},
+            {g: "Guten Tag", u: "Хайрли кун", l: "A1.1"},
+            {g: "Heißen", u: "Аталмоқ", l: "A1.1"},
+            {g: "Ich", u: "Мен", l: "A1.1"},
+            {g: "Du", u: "Сен", l: "A1.1"},
+            {g: "Wer", u: "Ким", l: "A1.1"}
+        ];
+
+        let index = 0;
+
+        function flipCard() {
+            document.getElementById('translationDisplay').style.visibility = 'visible';
+        }
+
+        function nextWord() {
+            index = (index + 1) % words.length;
+            document.getElementById('wordDisplay').innerText = words[index].g;
+            document.getElementById('translationDisplay').innerText = words[index].u;
+            document.getElementById('translationDisplay').style.visibility = 'hidden';
+        }
+    </script>
+</body>
+</html>
