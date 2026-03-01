@@ -3,98 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deutsch mit Abduvoxid</title>
+    <title>Deutsch Pro - Abduvoxid</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --de-gold: #FFCC00; --de-red: #FF0000; --de-black: #000000; --bg: #f8f9fa; }
-        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
+        :root { --de-green: #28a745; --de-gold: #FFCC00; --de-black: #2c3e50; --bg: #f0f2f5; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
         
-        /* Даража менюси */
-        .menu { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 20px; }
-        .menu button { flex: 1; padding: 12px; border: 2px solid var(--de-black); border-radius: 10px; background: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
-        .menu button.active { background: var(--de-black); color: white; }
+        .tabs { display: flex; gap: 5px; width: 100%; max-width: 400px; margin-bottom: 15px; }
+        .tabs button { flex: 1; padding: 10px; border: none; border-radius: 8px; background: #ddd; font-weight: bold; cursor: pointer; }
+        .tabs button.active { background: var(--de-black); color: white; }
 
-        /* Карточка дизайни */
-        .card { background: white; width: 100%; max-width: 360px; border-radius: 25px; padding: 50px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; border-bottom: 8px solid var(--de-gold); position: relative; cursor: pointer; }
-        .level-tag { position: absolute; top: 15px; right: 20px; font-size: 12px; font-weight: bold; color: var(--de-red); border: 1px solid var(--de-red); padding: 2px 8px; border-radius: 5px; }
+        .card, .quiz-card { background: white; width: 100%; max-width: 360px; border-radius: 20px; padding: 40px 20px; box-shadow: 0 8px 20px rgba(0,0,0,0.1); text-align: center; border-bottom: 6px solid var(--de-gold); margin: auto 0; }
         
-        h1 { font-size: 38px; color: var(--de-black); margin: 10px 0; }
-        .uzbek { font-size: 22px; color: #555; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc; display: none; }
+        h1 { font-size: 34px; color: var(--de-black); margin: 10px 0; }
+        .uzbek { font-size: 20px; color: #666; margin-top: 15px; display: none; border-top: 1px dashed #ccc; padding-top: 10px; }
         
-        .audio-btn { background: #eee; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: none; font-size: 20px; }
+        .next-btn { background: var(--de-green); color: white; border: none; padding: 18px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 20px; box-shadow: 0 4px 12px rgba(40,167,69,0.3); cursor: pointer; }
 
-        /* Тугма */
-        .next-btn { background: var(--de-red); color: white; border: none; padding: 18px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 25px; box-shadow: 0 4px 15px rgba(255,0,0,0.3); cursor: pointer; }
-        .next-btn:active { transform: translateY(2px); }
+        /* Ўйин услуби */
+        .options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+        .option-btn { padding: 12px; border: 2px solid #eee; border-radius: 10px; background: white; cursor: pointer; transition: 0.2s; font-size: 16px; }
+        .option-btn:active { background: #f0f0f0; }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; }
+        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; }
     </style>
 </head>
 <body>
 
-    <div class="menu">
-        <button onclick="changeLevel('A1')" id="btnA1" class="active">A1 Даража</button>
-        <button onclick="changeLevel('A2')" id="btnA2">A2 Даража</button>
+    <div class="tabs">
+        <button onclick="showSection('learn')" id="tabLearn" class="active">📖 Ўрганиш</button>
+        <button onclick="showSection('game')" id="tabGame">🎮 Ўйин</button>
     </div>
 
-    <div class="card" onclick="flipCard()">
-        <div class="level-tag" id="lvlTag">A1</div>
-        <button class="audio-btn" onclick="playAudio(event)">🔊</button>
-        <h1 id="deWord">Lernen</h1>
-        <div class="uzbek" id="uzWord">Ўрганмоқ</div>
-        <p id="hint" style="color: #999; font-size: 12px; margin-top: 10px;">Таржима учун босинг</p>
+    <div id="learnSection" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="card" onclick="this.querySelector('.uzbek').style.display='block'">
+            <div id="deWordDisplay">Lernen</div>
+            <div class="uzbek" id="uzWordDisplay">Ўрганмоқ</div>
+            <p style="color: #bbb; font-size: 11px; margin-top: 10px;">Таржима учун босинг</p>
+        </div>
+        <button class="next-btn" onclick="nextWord()">Кейинги сўз ➔</button>
     </div>
 
-    <button class="next-btn" onclick="nextWord()">Кейинги сўз ➔</button>
+    <div id="gameSection" style="width: 100%; display: none; flex-direction: column; align-items: center;">
+        <div class="quiz-card">
+            <h2 id="quizQuestion" style="font-size: 28px;">...</h2>
+            <div class="options" id="quizOptions"></div>
+        </div>
+        <button class="next-btn" onclick="startQuiz()" style="background: var(--de-black);">Янги савол ↻</button>
+    </div>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        const words = {
-            'A1': [
-                {g: "Essen", u: "Емоқ"}, {g: "Trinken", u: "Ичмоқ"}, {g: "Schlafen", u: "Ухламоқ"},
-                {g: "Das Haus", u: "Уй"}, {g: "Der Tisch", u: "Стол"}, {g: "Schön", u: "Чиройли"},
-                {g: "Arbeiten", u: "Ишламоқ"}, {g: "Kaufen", u: "Сотиб олмоқ"}, {g: "Reisen", u: "Саёҳат қилмоқ"},
-                {g: "Vielleicht", u: "Эҳтимол"}, {g: "Immer", u: "Доим"}, {g: "Heute", u: "Бугун"},
-                {g: "Morgen", u: "Эртага"}, {g: "Jetzt", u: "Ҳозир"}, {g: "Zusammen", u: "Биргаликда"}
-            ],
-            'A2': [
-                {g: "Verstehen", u: "Тушунмоқ"}, {g: "Besuchen", u: "Зиёрат қилмоқ"}, {g: "Die Reise", u: "Саёҳат"},
-                {g: "Gefährlich", u: "Хавфли"}, {g: "Erklären", u: "Тушунтирмоқ"}, {g: "Der Erfolg", u: "Муваффақият"},
-                {g: "Sich freuen", u: "Хурсанд бўлмоқ"}, {g: "Wichtig", u: "Муҳим"}, {g: "Einfach", u: "Оддий/Осон"},
-                {g: "Schwierig", u: "Қийин"}, {g: "Günstig", u: "Арзон/Қулай"}, {g: "Überall", u: "Ҳар ерда"}
-            ]
-        };
+        // Бу ерга 1500 та сўзни босқичма-босқич қўшамиз
+        const dictionary = [
+            {g: "Brot", u: "Non"}, {g: "Wasser", u: "Suv"}, {g: "Milch", u: "Sut"},
+            {g: "Schule", u: "Maktab"}, {g: "Lehrer", u: "O'qituvchi"}, {g: "Buch", u: "Kitob"},
+            {g: "Haus", u: "Uy"}, {g: "Stadt", u: "Shahar"}, {g: "Land", u: "Davlat"},
+            {g: "Freund", u: "Do'st"}, {g: "Arbeit", u: "Ish"}, {g: "Zeit", u: "Vaqt"}
+            // Давоми бор...
+        ];
 
-        let currentLevel = 'A1';
-
-        function changeLevel(lvl) {
-            currentLevel = lvl;
-            document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn' + lvl).classList.add('active');
-            document.getElementById('lvlTag').innerText = lvl;
-            nextWord();
-        }
-
-        function flipCard() {
-            document.getElementById('uzWord').style.display = 'block';
-            document.getElementById('hint').style.display = 'none';
+        function showSection(sec) {
+            document.getElementById('learnSection').style.display = sec === 'learn' ? 'flex' : 'none';
+            document.getElementById('gameSection').style.display = sec === 'game' ? 'flex' : 'none';
+            document.getElementById('tabLearn').classList.toggle('active', sec === 'learn');
+            document.getElementById('tabGame').classList.toggle('active', sec === 'game');
+            if(sec === 'game') startQuiz();
         }
 
         function nextWord() {
-            let list = words[currentLevel];
-            let word = list[Math.floor(Math.random() * list.length)];
-            document.getElementById('deWord').innerText = word.g;
-            document.getElementById('uzWord').innerText = word.u;
-            document.getElementById('uzWord').style.display = 'none';
-            document.getElementById('hint').style.display = 'block';
+            let item = dictionary[Math.floor(Math.random() * dictionary.length)];
+            document.getElementById('deWordDisplay').innerHTML = `<h1>${item.g}</h1>`;
+            document.getElementById('uzWordDisplay').innerText = item.u;
+            document.getElementById('uzWordDisplay').style.display = 'none';
         }
 
-        function playAudio(event) {
-            event.stopPropagation();
-            let text = document.getElementById('deWord').innerText;
-            let utterance = new SpeechSynthesisUtterance(text);
-            utterance.lang = 'de-DE';
-            window.speechSynthesis.speak(utterance);
+        function startQuiz() {
+            let correctItem = dictionary[Math.floor(Math.random() * dictionary.length)];
+            document.getElementById('quizQuestion').innerText = correctItem.g;
+            
+            let options = [correctItem.u];
+            while(options.length < 4) {
+                let randomU = dictionary[Math.floor(Math.random() * dictionary.length)].u;
+                if(!options.includes(randomU)) options.push(randomU);
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            let optionsHtml = '';
+            options.forEach(opt => {
+                optionsHtml += `<button class="option-btn" onclick="checkAnswer(this, '${opt}', '${correctItem.u}')">${opt}</button>`;
+            });
+            document.getElementById('quizOptions').innerHTML = optionsHtml;
+        }
+
+        function checkAnswer(btn, selected, correct) {
+            if(selected === correct) {
+                btn.classList.add('correct');
+                setTimeout(startQuiz, 1000);
+            } else {
+                btn.classList.add('wrong');
+            }
         }
 
         nextWord();
