@@ -7,133 +7,131 @@
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --de-green: #28a745; --de-gold: #FFCC00; --de-black: #2c3e50; --bg: #f0f2f5; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; user-select: none; }
         
         /* Юқориги режа блоки */
-        .goal-container { background: white; width: 100%; max-width: 380px; padding: 15px; border-radius: 18px; margin-bottom: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: center; border: 1px solid #ddd; }
+        .goal-container { background: white; width: 100%; max-width: 380px; padding: 15px; border-radius: 18px; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: center; border: 1px solid #ddd; }
         .goal-btns { display: flex; gap: 5px; margin: 10px 0; }
-        .goal-btns button { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 10px; background: #fff; font-size: 13px; font-weight: bold; cursor: pointer; }
+        .goal-btns button { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 8px; background: #fff; font-size: 11px; font-weight: bold; cursor: pointer; }
         .goal-btns button.active { background: var(--de-black); color: white; border-color: var(--de-black); }
+        .progress-box { background: #eee; height: 10px; border-radius: 20px; overflow: hidden; margin: 8px 0; }
+        .progress-fill { background: var(--de-green); width: 0%; height: 100%; transition: 0.4s; }
 
-        .progress-box { background: #eee; height: 12px; border-radius: 20px; overflow: hidden; margin: 10px 0; position: relative; }
-        .progress-fill { background: linear-gradient(90deg, #28a745, #85d08b); width: 0%; height: 100%; transition: 0.4s; }
+        /* Таблар */
+        .tabs { display: flex; gap: 8px; width: 100%; max-width: 400px; margin-bottom: 15px; }
+        .tabs button { flex: 1; padding: 12px; border: none; border-radius: 12px; background: #dee2e6; font-weight: bold; cursor: pointer; }
+        .tabs button.active { background: var(--de-black); color: white; }
 
-        /* Даража танлаш */
-        .level-btns { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 15px; }
-        .level-btns button { flex: 1; padding: 15px; border-radius: 12px; border: 2px solid var(--de-black); background: white; font-weight: 900; cursor: pointer; }
-        .level-btns button.active { background: var(--de-black); color: white; }
-
-        /* Асосий Карточка */
-        .card { background: white; width: 100%; max-width: 360px; border-radius: 25px; padding: 40px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; border-bottom: 8px solid var(--de-gold); margin-top: 10px; cursor: pointer; }
-        h1 { font-size: 42px; color: var(--de-black); margin: 15px 0; font-weight: 800; }
-        .uzbek-bold { font-size: 28px; color: #000; margin-top: 20px; display: none; border-top: 3px solid #f0f0f0; padding-top: 15px; font-weight: 900; text-transform: uppercase; }
+        /* Карточка */
+        .card, .quiz-card { background: white; width: 100%; max-width: 360px; border-radius: 25px; padding: 35px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; border-bottom: 8px solid var(--de-gold); margin-top: 10px; }
+        h1 { font-size: 40px; color: var(--de-black); margin: 10px 0; font-weight: 800; }
+        .uzbek-bold { font-size: 26px; color: #000; margin-top: 15px; display: none; border-top: 3px solid #f0f0f0; padding-top: 10px; font-weight: 900; text-transform: uppercase; }
         
-        .audio-icon { font-size: 30px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; cursor: pointer; }
+        .audio-icon { font-size: 28px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 50%; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; cursor: pointer; }
+        .next-btn { background: var(--de-green); color: white; border: none; padding: 18px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 15px; cursor: pointer; }
 
-        .next-btn { background: var(--de-green); color: white; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 18px; font-size: 20px; font-weight: bold; margin-top: 20px; cursor: pointer; box-shadow: 0 5px 15px rgba(40,167,69,0.4); }
-        
-        #congrats { color: var(--de-green); font-weight: 900; font-size: 18px; display: none; margin-top: 10px; animation: bounce 0.5s infinite alternate; }
-        @keyframes bounce { from { transform: scale(1); } to { transform: scale(1.05); } }
+        /* Ўйин */
+        .options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
+        .option-btn { padding: 15px; border: 2px solid #eee; border-radius: 12px; background: white; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; }
+        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; }
     </style>
 </head>
 <body>
 
-    <div class="goal-container">
-        <div style="font-weight: 800; font-size: 15px;">БУГУНГИ МАҚСАД</div>
+    <div class="goal-container" id="goalDiv">
+        <div style="font-weight: 800; font-size: 14px;">БУГУНГИ МАҚСАД</div>
         <div class="goal-btns">
-            <button onclick="changeGoal(6, this)" id="g6" class="active">ОСОН (6)</button>
-            <button onclick="changeGoal(20, this)" id="g20">ЎРТА (20)</button>
-            <button onclick="changeGoal(40, this)" id="g40">ҚИЙИН (40)</button>
+            <button onclick="setGoal(6, this)" id="g6" class="active">ОСОН (6)</button>
+            <button onclick="setGoal(20, this)" id="g20">ЎРТА (20)</button>
+            <button onclick="setGoal(40, this)" id="g40">ҚИЙИН (40)</button>
         </div>
         <div class="progress-box"><div class="progress-fill" id="pFill"></div></div>
-        <div style="font-weight: bold; font-size: 13px;">
-            Прогресс: <span id="pCount">0</span> / <span id="pGoal">6</span>
+        <div style="font-weight: bold; font-size: 12px;">Прогресс: <span id="pCount">0</span> / <span id="pGoal">6</span></div>
+    </div>
+
+    <div class="tabs">
+        <button onclick="showTab('learn')" id="tL" class="active">📖 ЎРГАНИШ</button>
+        <button onclick="showTab('game')" id="tG">🎮 ЎЙИН</button>
+    </div>
+
+    <div id="learnSec" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
+        <div class="card" onclick="document.getElementById('uzW').style.display='block'">
+            <div class="audio-icon" onclick="speak(event)">🔊</div>
+            <h1 id="deW">Lernen</h1>
+            <div class="uzbek-bold" id="uzW">ЎРГАНМОҚ</div>
+            <p id="h" style="color:#999; font-size:12px; margin-top:10px;">Кўриш учун босинг</p>
         </div>
-        <div id="congrats">🎉 БУГУНГИ РЕЖА БАЖАРИЛДИ!</div>
+        <button class="next-btn" onclick="next()">КЕЙИНГИ СЎЗ ➔</button>
     </div>
 
-    <div class="level-btns">
-        <button onclick="setLevel('A1')" id="lA1" class="active">A1</button>
-        <button onclick="setLevel('A2')" id="lA2">A2</button>
+    <div id="gameSec" style="width: 100%; display: none; flex-direction: column; align-items: center;">
+        <div class="quiz-card">
+            <h2 id="qQ">?</h2>
+            <div class="options" id="qO"></div>
+        </div>
+        <button class="next-btn" onclick="startQuiz()" style="background:#000;">ЯНГИ САВОЛ ↻</button>
     </div>
-
-    <div class="card" onclick="showUz()">
-        <div class="audio-icon" onclick="speakDE(event)">🔊</div>
-        <h1 id="deWord">Lernen</h1>
-        <div class="uzbek-bold" id="uzWord">ЎРГАНМОҚ</div>
-        <p id="hint" style="color: #999; margin-top: 10px;">Таржимани кўриш учун босинг</p>
-    </div>
-
-    <button class="next-btn" onclick="nextWord()">КЕЙИНГИ СЎЗ ➔</button>
 
     <script>
-        let tg = window.Telegram.WebApp;
-        tg.expand();
+        let tg = window.Telegram.WebApp; tg.expand();
+        const dict = [
+            {g: "Brot", u: "NON"}, {g: "Wasser", u: "SUV"}, {g: "Milch", u: "SUT"},
+            {g: "Buch", u: "KITOB"}, {g: "Schule", u: "MAKTAB"}, {g: "Lehrer", u: "O'QITUVCHI"}
+        ];
+        let goal = 6, seen = 0;
 
-        const words = {
-            'A1': [
-                {g: "Brot", u: "NON"}, {g: "Wasser", u: "SUV"}, {g: "Milch", u: "SUT"},
-                {g: "Schule", u: "MAKTAB"}, {g: "Lehrer", u: "O'QITUVCHI"}, {g: "Essen", u: "YEMOQ"}
-            ],
-            'A2': [
-                {g: "Verstehen", u: "TUSHUNMOQ"}, {g: "Vergessen", u: "UNUTMOQ"}, {g: "Wichtig", u: "MUHIM"}
-            ]
-        };
-
-        let currentGoal = 6;
-        let count = 0;
-        let level = 'A1';
-
-        function changeGoal(n, btn) {
-            currentGoal = n;
-            document.querySelectorAll('.goal-btns button').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            document.getElementById('pGoal').innerText = n;
-            updateProgress();
+        function setGoal(n, b) {
+            goal = n; document.querySelectorAll('.goal-btns button').forEach(x => x.classList.remove('active'));
+            b.classList.add('active'); document.getElementById('pGoal').innerText = n; updateP();
         }
 
-        function setLevel(l) {
-            level = l;
-            document.querySelectorAll('.level-btns button').forEach(b => b.classList.remove('active'));
-            document.getElementById('l' + l).classList.add('active');
-            nextWord(false);
+        function showTab(s) {
+            document.getElementById('learnSec').style.display = s==='learn'?'flex':'none';
+            document.getElementById('gameSec').style.display = s==='game'?'flex':'none';
+            document.getElementById('goalDiv').style.display = s==='learn'?'block':'none';
+            document.getElementById('tL').classList.toggle('active', s==='learn');
+            document.getElementById('tG').classList.toggle('active', s==='game');
+            if(s==='game') startQuiz();
         }
 
-        function showUz() {
-            document.getElementById('uzWord').style.display = 'block';
-            document.getElementById('hint').style.display = 'none';
+        function next() {
+            seen++; updateP();
+            let i = dict[Math.floor(Math.random()*dict.length)];
+            document.getElementById('deW').innerText = i.g;
+            document.getElementById('uzW').innerText = i.u;
+            document.getElementById('uzW').style.display = 'none';
         }
 
-        function nextWord(increment = true) {
-            if(increment) {
-                count++;
-                updateProgress();
+        function updateP() {
+            let p = Math.min((seen/goal)*100, 100);
+            document.getElementById('pFill').style.width = p+"%";
+            document.getElementById('pCount').innerText = seen;
+        }
+
+        function speak(e) {
+            e.stopPropagation();
+            let msg = new SpeechSynthesisUtterance(document.getElementById('deW').innerText);
+            msg.lang = 'de-DE'; window.speechSynthesis.speak(msg);
+        }
+
+        function startQuiz() {
+            let c = dict[Math.floor(Math.random()*dict.length)];
+            document.getElementById('qQ').innerText = c.g;
+            let opts = [c.u];
+            while(opts.length<4) {
+                let r = dict[Math.floor(Math.random()*dict.length)].u;
+                if(!opts.includes(r)) opts.push(r);
             }
-            let list = words[level];
-            let item = list[Math.floor(Math.random() * list.length)];
-            document.getElementById('deWord').innerText = item.g;
-            document.getElementById('uzWord').innerText = item.u;
-            document.getElementById('uzWord').style.display = 'none';
-            document.getElementById('hint').style.display = 'block';
+            opts.sort(() => Math.random()-0.5);
+            document.getElementById('qO').innerHTML = opts.map(o => `<button class="option-btn" onclick="check(this,'${o}','${c.u}')">${o}</button>`).join('');
         }
 
-        function updateProgress() {
-            let p = (count / currentGoal) * 100;
-            document.getElementById('pFill').style.width = Math.min(p, 100) + "%";
-            document.getElementById('pCount').innerText = count;
-            if(count >= currentGoal) document.getElementById('congrats').style.display = 'block';
+        function check(b,s,c) {
+            if(s===c) { b.classList.add('correct'); setTimeout(startQuiz,800); }
+            else b.classList.add('wrong');
         }
-
-        function speakDE(event) {
-            event.stopPropagation();
-            let text = document.getElementById('deWord').innerText;
-            // Google TTS API орқали овоз бериш
-            let audio = new Audio(`https://translate.google.com/translate_tts?ie=UTF-8&q=${encodeURIComponent(text)}&tl=de&client=tw-ob`);
-            audio.play();
-        }
-
-        // Илк сўз
-        nextWord(false);
+        next();
     </script>
 </body>
 </html>
