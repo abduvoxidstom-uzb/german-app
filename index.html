@@ -4,17 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Deutsch Pro - Abduvoxid</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_KEY_HERE"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --de-green: #28a745; --de-gold: #FFCC00; --de-black: #2c3e50; --bg: #f0f2f5; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; user-select: none; }
         
-        /* Юқориги режа блоки */
+        /* Прогресс ва Режа */
         .goal-container { background: white; width: 100%; max-width: 380px; padding: 15px; border-radius: 18px; margin-bottom: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); text-align: center; border: 1px solid #ddd; }
         .goal-btns { display: flex; gap: 5px; margin: 10px 0; }
-        .goal-btns button { flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 8px; background: #fff; font-size: 11px; font-weight: bold; cursor: pointer; }
+        .goal-btns button { flex: 1; padding: 10px; border: 1px solid #ccc; border-radius: 8px; background: #fff; font-size: 11px; font-weight: bold; cursor: pointer; }
         .goal-btns button.active { background: var(--de-black); color: white; border-color: var(--de-black); }
-        .progress-box { background: #eee; height: 10px; border-radius: 20px; overflow: hidden; margin: 8px 0; }
+        .progress-box { background: #eee; height: 12px; border-radius: 20px; overflow: hidden; margin: 10px 0; }
         .progress-fill { background: var(--de-green); width: 0%; height: 100%; transition: 0.4s; }
 
         /* Таблар */
@@ -23,16 +24,18 @@
         .tabs button.active { background: var(--de-black); color: white; }
 
         /* Карточка */
-        .card, .quiz-card { background: white; width: 100%; max-width: 360px; border-radius: 25px; padding: 35px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; border-bottom: 8px solid var(--de-gold); margin-top: 10px; }
-        h1 { font-size: 40px; color: var(--de-black); margin: 10px 0; font-weight: 800; }
-        .uzbek-bold { font-size: 26px; color: #000; margin-top: 15px; display: none; border-top: 3px solid #f0f0f0; padding-top: 10px; font-weight: 900; text-transform: uppercase; }
+        .card, .quiz-card { background: white; width: 100%; max-width: 360px; border-radius: 25px; padding: 40px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; border-bottom: 8px solid var(--de-gold); margin-top: 10px; position: relative; }
+        h1 { font-size: 42px; color: var(--de-black); margin: 15px 0; font-weight: 800; }
+        .uzbek-bold { font-size: 28px; color: #000; margin-top: 15px; display: none; border-top: 4px solid #f0f0f0; padding-top: 15px; font-weight: 900; text-transform: uppercase; }
         
-        .audio-icon { font-size: 28px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 50%; width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; cursor: pointer; }
-        .next-btn { background: var(--de-green); color: white; border: none; padding: 18px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 15px; cursor: pointer; }
+        .audio-icon { font-size: 32px; background: #f8f9fa; border: 2px solid var(--de-gold); border-radius: 50%; width: 65px; height: 65px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; cursor: pointer; animation: pulse 2s infinite; }
+        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0.4); } 70% { box-shadow: 0 0 0 15px rgba(255, 204, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 204, 0, 0); } }
 
-        /* Ўйин */
-        .options { display: grid; grid-template-columns: 1fr; gap: 10px; margin-top: 20px; }
-        .option-btn { padding: 15px; border: 2px solid #eee; border-radius: 12px; background: white; font-weight: 700; cursor: pointer; font-size: 16px; }
+        .next-btn { background: var(--de-green); color: white; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 18px; font-size: 20px; font-weight: bold; margin-top: 15px; cursor: pointer; box-shadow: 0 5px 15px rgba(40,167,69,0.3); }
+
+        /* Ўйин опциялари */
+        .options { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 25px; }
+        .option-btn { padding: 16px; border: 2px solid #eee; border-radius: 15px; background: white; font-weight: 800; cursor: pointer; font-size: 18px; }
         .correct { background: #d4edda !important; border-color: #28a745 !important; }
         .wrong { background: #f8d7da !important; border-color: #dc3545 !important; }
     </style>
@@ -40,14 +43,14 @@
 <body>
 
     <div class="goal-container" id="goalDiv">
-        <div style="font-weight: 800; font-size: 14px;">БУГУНГИ МАҚСАД</div>
+        <div style="font-weight: 900;">КУНЛИК МАҚСАД</div>
         <div class="goal-btns">
-            <button onclick="setGoal(6, this)" id="g6" class="active">ОСОН (6)</button>
-            <button onclick="setGoal(20, this)" id="g20">ЎРТА (20)</button>
-            <button onclick="setGoal(40, this)" id="g40">ҚИЙИН (40)</button>
+            <button onclick="setGoal(6, this)" id="g6" class="active">6 ТА</button>
+            <button onclick="setGoal(20, this)" id="g20">20 ТА</button>
+            <button onclick="setGoal(40, this)" id="g40">40 ТА</button>
         </div>
         <div class="progress-box"><div class="progress-fill" id="pFill"></div></div>
-        <div style="font-weight: bold; font-size: 12px;">Прогресс: <span id="pCount">0</span> / <span id="pGoal">6</span></div>
+        <div style="font-weight: 900; font-size: 14px;">ПРОГРЕСС: <span id="pCount">0</span> / <span id="pGoal">6</span></div>
     </div>
 
     <div class="tabs">
@@ -57,17 +60,18 @@
 
     <div id="learnSec" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="card" onclick="document.getElementById('uzW').style.display='block'">
-            <div class="audio-icon" onclick="speak(event)">🔊</div>
+            <div class="audio-icon" onclick="speakNow(event)">🔊</div>
             <h1 id="deW">Lernen</h1>
             <div class="uzbek-bold" id="uzW">ЎРГАНМОҚ</div>
-            <p id="h" style="color:#999; font-size:12px; margin-top:10px;">Кўриш учун босинг</p>
+            <p style="color:#888; font-size:13px; margin-top:10px; font-weight:bold;">ТАРЖИМА УЧУН БОСИНГ</p>
         </div>
-        <button class="next-btn" onclick="next()">КЕЙИНГИ СЎЗ ➔</button>
+        <button class="next-btn" onclick="nextWord()">КЕЙИНГИ СЎЗ ➔</button>
     </div>
 
     <div id="gameSec" style="width: 100%; display: none; flex-direction: column; align-items: center;">
         <div class="quiz-card">
-            <h2 id="qQ">?</h2>
+            <p style="font-weight:bold; color:#666;">БУ НИМА ДЕГАНИ?</p>
+            <h2 id="qQ" style="font-size:36px; margin:15px 0;">...</h2>
             <div class="options" id="qO"></div>
         </div>
         <button class="next-btn" onclick="startQuiz()" style="background:#000;">ЯНГИ САВОЛ ↻</button>
@@ -76,8 +80,9 @@
     <script>
         let tg = window.Telegram.WebApp; tg.expand();
         const dict = [
-            {g: "Brot", u: "NON"}, {g: "Wasser", u: "SUV"}, {g: "Milch", u: "SUT"},
-            {g: "Buch", u: "KITOB"}, {g: "Schule", u: "MAKTAB"}, {g: "Lehrer", u: "O'QITUVCHI"}
+            {g: "Guten Tag", u: "XAYRLI KUN"}, {g: "Danke", u: "RAHMAT"}, {g: "Tisch", u: "STOL"},
+            {g: "Wasser", u: "SUV"}, {g: "Brot", u: "NON"}, {g: "Milch", u: "SUT"},
+            {g: "Buch", u: "KITOB"}, {g: "Schule", u: "MAKTAB"}, {g: "Apfel", u: "OLMA"}
         ];
         let goal = 6, seen = 0;
 
@@ -95,12 +100,14 @@
             if(s==='game') startQuiz();
         }
 
-        function next() {
+        function nextWord() {
             seen++; updateP();
             let i = dict[Math.floor(Math.random()*dict.length)];
             document.getElementById('deW').innerText = i.g;
             document.getElementById('uzW').innerText = i.u;
             document.getElementById('uzW').style.display = 'none';
+            // Сўз алмашганда автоматик талаффуз (агар браузер рухсат берса)
+            responsiveVoice.speak(i.g, "Deutsch Female");
         }
 
         function updateP() {
@@ -109,10 +116,10 @@
             document.getElementById('pCount').innerText = seen;
         }
 
-        function speak(e) {
+        function speakNow(e) {
             e.stopPropagation();
-            let msg = new SpeechSynthesisUtterance(document.getElementById('deW').innerText);
-            msg.lang = 'de-DE'; window.speechSynthesis.speak(msg);
+            let text = document.getElementById('deW').innerText;
+            responsiveVoice.speak(text, "Deutsch Female");
         }
 
         function startQuiz() {
@@ -131,7 +138,13 @@
             if(s===c) { b.classList.add('correct'); setTimeout(startQuiz,800); }
             else b.classList.add('wrong');
         }
-        next();
+        
+        // Биринчи марта саҳифани босганда аудио тизимини "уйғотиш"
+        document.body.addEventListener('click', function() {
+            responsiveVoice.init();
+        }, {once: true});
+
+        nextWord();
     </script>
 </body>
 </html>
