@@ -6,46 +6,60 @@
     <title>Немисча Луғат</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: sans-serif; background: #f4f4f9; text-align: center; padding: 20px; }
-        .card { background: white; border-radius: 15px; padding: 40px 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-top: 50px; cursor: pointer; }
-        .level-badge { background: #ff9800; color: white; padding: 5px 15px; border-radius: 20px; font-size: 14px; }
-        h1 { font-size: 32px; color: #333; margin: 20px 0; }
-        p { color: #666; font-size: 18px; }
-        .btn { background: #2196F3; color: white; border: none; padding: 15px 30px; border-radius: 10px; font-size: 18px; margin-top: 20px; width: 100%; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; margin: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        .card { background: white; width: 85%; max-width: 400px; border-radius: 20px; padding: 50px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; transition: 0.3s; border: 2px solid #e0e0e0; }
+        .card:active { transform: scale(0.98); }
+        .level { background: #4CAF50; color: white; padding: 5px 15px; border-radius: 50px; font-size: 14px; margin-bottom: 20px; display: inline-block; }
+        h1 { font-size: 40px; color: #2c3e50; margin: 10px 0; }
+        .translation { font-size: 22px; color: #7f8c8d; min-height: 30px; margin-top: 15px; border-top: 1px solid #eee; padding-top: 15px; }
+        .controls { margin-top: 30px; width: 85%; max-width: 400px; }
+        button { background: #0088cc; color: white; border: none; padding: 15px; width: 100%; border-radius: 12px; font-size: 18px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 15px rgba(0,136,204,0.3); }
+        .hint { color: #999; font-size: 12px; margin-top: 10px; }
     </style>
 </head>
 <body>
-    <span class="level-badge" id="levelDisplay">A1.1 - 1-кун</span>
-    <div class="card" onclick="flipCard()">
-        <h1 id="wordDisplay">Hallo</h1>
-        <p id="translationDisplay" style="visibility: hidden;">Салом</p>
+    <div class="level" id="levelTag">A1.1 - 1-Блок</div>
+    <div class="card" onclick="showTranslation()">
+        <h1 id="germanWord">Hallo</h1>
+        <div class="translation" id="uzbekWord" style="display: none;">Салом</div>
+        <div class="hint" id="hintText">Таржимасини кўриш учун устига босинг</div>
     </div>
-    <button class="btn" onclick="nextWord()">Кейинги сўз →</button>
+    <div class="controls">
+        <button onclick="nextWord()">Кейинги сўз ➔</button>
+    </div>
 
     <script>
         let tg = window.Telegram.WebApp;
-        tg.expand(); // Иловани тўлиқ экранга ёйиш
+        tg.expand();
 
-        const words = [
-            {g: "Hallo", u: "Салом", l: "A1.1"},
-            {g: "Guten Tag", u: "Хайрли кун", l: "A1.1"},
-            {g: "Heißen", u: "Аталмоқ", l: "A1.1"},
-            {g: "Ich", u: "Мен", l: "A1.1"},
-            {g: "Du", u: "Сен", l: "A1.1"},
-            {g: "Wer", u: "Ким", l: "A1.1"}
+        const dictionary = [
+            {g: "Hallo", u: "Салом"},
+            {g: "Guten Morgen", u: "Хайрли тонг"},
+            {g: "Guten Tag", u: "Хайрли кун"},
+            {g: "Guten Abend", u: "Хайрли кеч"},
+            {g: "Gute Nacht", u: "Хайрли тун"},
+            {g: "Tschüss", u: "Хайр"},
+            {g: "Auf Wiedersehen", u: "Кўришгунча"},
+            {g: "Ja", u: "Ҳа"},
+            {g: "Nein", u: "Йўқ"},
+            {g: "Danke", u: "Раҳмат"},
+            {g: "Bitte", u: "Илтимос / Арзимайди"},
+            {g: "Entschuldigung", u: "Кечирасиз"}
         ];
 
-        let index = 0;
+        let currentIndex = 0;
 
-        function flipCard() {
-            document.getElementById('translationDisplay').style.visibility = 'visible';
+        function showTranslation() {
+            document.getElementById('uzbekWord').style.display = 'block';
+            document.getElementById('hintText').style.display = 'none';
         }
 
         function nextWord() {
-            index = (index + 1) % words.length;
-            document.getElementById('wordDisplay').innerText = words[index].g;
-            document.getElementById('translationDisplay').innerText = words[index].u;
-            document.getElementById('translationDisplay').style.visibility = 'hidden';
+            currentIndex = Math.floor(Math.random() * dictionary.length);
+            document.getElementById('germanWord').innerText = dictionary[currentIndex].g;
+            document.getElementById('uzbekWord').innerText = dictionary[currentIndex].u;
+            document.getElementById('uzbekWord').style.display = 'none';
+            document.getElementById('hintText').style.display = 'block';
         }
     </script>
 </body>
