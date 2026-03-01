@@ -3,78 +3,101 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Немисча Луғат Pro</title>
+    <title>Deutsch mit Abduvoxid</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --primary: #0088cc; --success: #4CAF50; --bg: #f5f7fa; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 20px; box-sizing: border-box; }
-        .menu { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 20px; }
-        .menu button { padding: 15px; border: none; border-radius: 12px; background: white; font-weight: bold; color: #333; box-shadow: 0 2px 5px rgba(0,0,0,0.05); cursor: pointer; }
-        .menu button.active { background: var(--primary); color: white; }
-        .card { background: white; width: 100%; max-width: 400px; border-radius: 25px; padding: 60px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; border: 1px solid #eee; margin-top: auto; margin-bottom: auto; }
-        .level-badge { background: var(--success); color: white; padding: 5px 15px; border-radius: 50px; font-size: 12px; margin-bottom: 15px; display: inline-block; text-transform: uppercase; }
-        h1 { font-size: 32px; color: #2c3e50; margin: 10px 0; }
-        .uzbek { font-size: 20px; color: #7f8c8d; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; min-height: 30px; }
-        .btn-next { background: var(--primary); color: white; border: none; padding: 18px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 20px; box-shadow: 0 5px 15px rgba(0,136,204,0.3); }
+        :root { --de-gold: #FFCC00; --de-red: #FF0000; --de-black: #000000; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', Roboto, sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
+        
+        /* Даража менюси */
+        .menu { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 20px; }
+        .menu button { flex: 1; padding: 12px; border: 2px solid var(--de-black); border-radius: 10px; background: white; font-weight: bold; cursor: pointer; transition: 0.3s; }
+        .menu button.active { background: var(--de-black); color: white; }
+
+        /* Карточка дизайни */
+        .card { background: white; width: 100%; max-width: 360px; border-radius: 25px; padding: 50px 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); text-align: center; border-bottom: 8px solid var(--de-gold); position: relative; cursor: pointer; }
+        .level-tag { position: absolute; top: 15px; right: 20px; font-size: 12px; font-weight: bold; color: var(--de-red); border: 1px solid var(--de-red); padding: 2px 8px; border-radius: 5px; }
+        
+        h1 { font-size: 38px; color: var(--de-black); margin: 10px 0; }
+        .uzbek { font-size: 22px; color: #555; margin-top: 20px; padding-top: 15px; border-top: 1px dashed #ccc; display: none; }
+        
+        .audio-btn { background: #eee; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: none; font-size: 20px; }
+
+        /* Тугма */
+        .next-btn { background: var(--de-red); color: white; border: none; padding: 18px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 25px; box-shadow: 0 4px 15px rgba(255,0,0,0.3); cursor: pointer; }
+        .next-btn:active { transform: translateY(2px); }
     </style>
 </head>
 <body>
 
     <div class="menu">
-        <button onclick="setArray('A1')" id="btnA1" class="active">A1 (Boshlang'ich)</button>
-        <button onclick="setArray('A2')" id="btnA2">A2 (Davomchilar)</button>
+        <button onclick="changeLevel('A1')" id="btnA1" class="active">A1 Даража</button>
+        <button onclick="changeLevel('A2')" id="btnA2">A2 Даража</button>
     </div>
 
-    <div class="card" onclick="showTranslation()">
-        <div class="level-badge" id="lvlBadge">A1 Даража</div>
-        <h1 id="deText">Lernen</h1>
-        <div class="uzbek" id="uzText" style="display: none;">Ўрганмоқ</div>
-        <div id="hint" style="color: #bbb; font-size: 12px; margin-top: 10px;">Таржима учун устига босинг</div>
+    <div class="card" onclick="flipCard()">
+        <div class="level-tag" id="lvlTag">A1</div>
+        <button class="audio-btn" onclick="playAudio(event)">🔊</button>
+        <h1 id="deWord">Lernen</h1>
+        <div class="uzbek" id="uzWord">Ўрганмоқ</div>
+        <p id="hint" style="color: #999; font-size: 12px; margin-top: 10px;">Таржима учун босинг</p>
     </div>
 
-    <button class="btn-next" onclick="nextWord()">Кейинги сўз ➔</button>
+    <button class="next-btn" onclick="nextWord()">Кейинги сўз ➔</button>
 
     <script>
         let tg = window.Telegram.WebApp;
         tg.expand();
 
-        const data = {
+        const words = {
             'A1': [
-                {g: "Hallo", u: "Salom"}, {g: "Danke", u: "Rahmat"}, {g: "Bitte", u: "Iltimos / Arzimaydi"},
-                {g: "Essen", u: "Yemoq"}, {g: "Trinken", u: "Ichmoq"}, {g: "Sprechen", u: "Gapirmoq"},
-                {g: "Schreiben", u: "Yozmoq"}, {g: "Lesen", u: "O'qimoq"}, {g: "Die Schule", u: "Maktab"},
-                {g: "Das Buch", u: "Kitob"}, {g: "Frühstücken", u: "Nonushta qilmoq"}, {g: "Kaufen", u: "Sotib olmoq"}
+                {g: "Essen", u: "Емоқ"}, {g: "Trinken", u: "Ичмоқ"}, {g: "Schlafen", u: "Ухламоқ"},
+                {g: "Das Haus", u: "Уй"}, {g: "Der Tisch", u: "Стол"}, {g: "Schön", u: "Чиройли"},
+                {g: "Arbeiten", u: "Ишламоқ"}, {g: "Kaufen", u: "Сотиб олмоқ"}, {g: "Reisen", u: "Саёҳат қилмоқ"},
+                {g: "Vielleicht", u: "Эҳтимол"}, {g: "Immer", u: "Доим"}, {g: "Heute", u: "Бугун"},
+                {g: "Morgen", u: "Эртага"}, {g: "Jetzt", u: "Ҳозир"}, {g: "Zusammen", u: "Биргаликда"}
             ],
             'A2': [
-                {g: "Verstehen", u: "Tushunmoq"}, {g: "Vergessen", u: "Unutmoq"}, {g: "Erinnern", u: "Eslamoq"},
-                {g: "Besuchen", u: "Ziyorat qilmoq"}, {g: "Gefährlich", u: "Xavfli"}, {g: "Wichtig", u: "Muhim"},
-                {g: "Erklären", u: "Tushuntirmoq"}, {g: "Der Erfolg", u: "Muvaffaqiyat"}
+                {g: "Verstehen", u: "Тушунмоқ"}, {g: "Besuchen", u: "Зиёрат қилмоқ"}, {g: "Die Reise", u: "Саёҳат"},
+                {g: "Gefährlich", u: "Хавфли"}, {g: "Erklären", u: "Тушунтирмоқ"}, {g: "Der Erfolg", u: "Муваффақият"},
+                {g: "Sich freuen", u: "Хурсанд бўлмоқ"}, {g: "Wichtig", u: "Муҳим"}, {g: "Einfach", u: "Оддий/Осон"},
+                {g: "Schwierig", u: "Қийин"}, {g: "Günstig", u: "Арзон/Қулай"}, {g: "Überall", u: "Ҳар ерда"}
             ]
         };
 
         let currentLevel = 'A1';
-        
-        function setArray(lvl) {
+
+        function changeLevel(lvl) {
             currentLevel = lvl;
             document.querySelectorAll('.menu button').forEach(b => b.classList.remove('active'));
             document.getElementById('btn' + lvl).classList.add('active');
-            document.getElementById('lvlBadge').innerText = lvl + " Даража";
+            document.getElementById('lvlTag').innerText = lvl;
             nextWord();
         }
 
-        function showTranslation() {
-            document.getElementById('uzText').style.display = 'block';
+        function flipCard() {
+            document.getElementById('uzWord').style.display = 'block';
             document.getElementById('hint').style.display = 'none';
         }
 
         function nextWord() {
-            let list = data[currentLevel];
+            let list = words[currentLevel];
             let word = list[Math.floor(Math.random() * list.length)];
-            document.getElementById('deText').innerText = word.g;
-            document.getElementById('uzText').innerText = word.u;
-            document.getElementById('uzText').style.display = 'none';
+            document.getElementById('deWord').innerText = word.g;
+            document.getElementById('uzWord').innerText = word.u;
+            document.getElementById('uzWord').style.display = 'none';
             document.getElementById('hint').style.display = 'block';
         }
+
+        function playAudio(event) {
+            event.stopPropagation();
+            let text = document.getElementById('deWord').innerText;
+            let utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'de-DE';
+            window.speechSynthesis.speak(utterance);
+        }
+
+        nextWord();
     </script>
 </body>
 </html>
