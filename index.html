@@ -3,44 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deutsch Pro - Abduvoxid</title>
+    <title>Deutsch Pro - Daily Goal</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --de-green: #28a745; --de-gold: #FFCC00; --de-black: #2c3e50; --de-red: #dc3545; --bg: #f0f2f5; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
         
-        /* Юқориги таблар */
-        .tabs { display: flex; gap: 8px; width: 100%; max-width: 400px; margin-bottom: 20px; }
-        .tabs button { flex: 1; padding: 12px; border: none; border-radius: 12px; background: #dee2e6; font-weight: bold; cursor: pointer; transition: 0.3s; color: #495057; }
-        .tabs button.active { background: var(--de-black); color: white; box-shadow: 0 4px 10px rgba(0,0,0,0.2); }
+        .tabs { display: flex; gap: 8px; width: 100%; max-width: 400px; margin-bottom: 15px; }
+        .tabs button { flex: 1; padding: 10px; border: none; border-radius: 10px; background: #dee2e6; font-weight: bold; cursor: pointer; }
+        .tabs button.active { background: var(--de-black); color: white; }
 
-        /* Даража тугмалари (Алоҳида кўринишда) */
+        /* Қийинлик даражаси блоки */
+        .goal-selector { background: white; width: 100%; max-width: 370px; padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
+        .goal-btns { display: flex; gap: 5px; margin-top: 10px; }
+        .goal-btns button { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 8px; background: #f8f9fa; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .goal-btns button.active { background: var(--de-gold); border-color: var(--de-black); }
+
+        .progress-bar { width: 100%; height: 8px; background: #eee; border-radius: 10px; margin-top: 10px; overflow: hidden; }
+        .progress-fill { height: 100%; background: var(--de-green); width: 0%; transition: 0.5s; }
+
+        /* Карточка ва бошқалар */
         .level-selector { display: flex; gap: 10px; width: 100%; max-width: 400px; margin-bottom: 15px; }
-        .level-selector button { flex: 1; padding: 14px; border: 2px solid var(--de-black); border-radius: 12px; background: white; font-weight: 800; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .level-selector button { flex: 1; padding: 12px; border: 2px solid var(--de-black); border-radius: 12px; background: white; font-weight: 800; cursor: pointer; }
         .level-selector button.active { background: var(--de-black); color: white; }
 
-        /* Карточка */
-        .card, .quiz-card { background: white; width: 100%; max-width: 360px; border-radius: 25px; padding: 45px 20px; box-shadow: 0 12px 28px rgba(0,0,0,0.12); text-align: center; border-bottom: 8px solid var(--de-gold); position: relative; margin-top: 10px; }
-        
-        .level-tag { position: absolute; top: 15px; right: 20px; font-size: 12px; font-weight: bold; color: var(--de-red); border: 1.5px solid var(--de-red); padding: 3px 10px; border-radius: 6px; text-transform: uppercase; }
-        
-        h1 { font-size: 40px; color: var(--de-black); margin: 15px 0; font-weight: 700; }
-        
-        /* Ўзбекча таржима (Жирний шрифт) */
+        .card { background: white; width: 100%; max-width: 360px; border-radius: 25px; padding: 40px 20px; box-shadow: 0 12px 28px rgba(0,0,0,0.12); text-align: center; border-bottom: 8px solid var(--de-gold); position: relative; }
+        h1 { font-size: 38px; color: var(--de-black); margin: 15px 0; }
         .uzbek { font-size: 24px; color: #333; margin-top: 20px; display: none; border-top: 2px dashed #eee; padding-top: 15px; font-weight: 900; }
         
-        .audio-btn { background: #f1f3f5; border: 1px solid #ced4da; border-radius: 50%; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; cursor: pointer; font-size: 22px; transition: 0.2s; }
-        .audio-btn:active { background: #e9ecef; transform: scale(0.95); }
-
-        /* Асосий тугма (Яшил) */
-        .next-btn { background: var(--de-green); color: white; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 18px; font-size: 19px; font-weight: bold; margin-top: 25px; box-shadow: 0 6px 16px rgba(40,167,69,0.35); cursor: pointer; transition: 0.2s; }
-        .next-btn:active { transform: translateY(3px); box-shadow: 0 2px 8px rgba(40,167,69,0.3); }
-
-        /* Quiz опциялари */
-        .options { display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 25px; }
-        .option-btn { padding: 16px; border: 2px solid #e9ecef; border-radius: 15px; background: white; cursor: pointer; transition: 0.2s; font-size: 18px; font-weight: 700; color: #495057; }
-        .correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
-        .wrong { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
+        .audio-btn { background: #f1f3f5; border-radius: 50%; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; border: 1px solid #ddd; cursor: pointer; }
+        .next-btn { background: var(--de-green); color: white; border: none; padding: 18px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 20px; cursor: pointer; }
+        
+        .congrats { color: var(--de-green); font-weight: bold; display: none; margin-top: 10px; }
     </style>
 </head>
 <body>
@@ -50,30 +44,41 @@
         <button onclick="showSection('game')" id="tabGame">🎮 Ўйин</button>
     </div>
 
+    <div class="goal-selector" id="goalBlock">
+        <span style="font-size: 14px; font-weight: bold;">Кунлик режани танланг:</span>
+        <div class="goal-btns">
+            <button onclick="setGoal(6, this)" id="goal6">Енгил (6)</button>
+            <button onclick="setGoal(20, this)" id="goal20">Ўрта (20)</button>
+            <button onclick="setGoal(40, this)" id="goal40">Қийин (40)</button>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+        <div style="font-size: 11px; margin-top: 5px; color: #666;">
+            Прогресс: <span id="progressText">0</span> / <span id="goalText">6</span>
+        </div>
+        <div class="congrats" id="congratsMsg">🎉 Бугунги режа бажарилди!</div>
+    </div>
+
     <div id="learnSection" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="level-selector">
-            <button onclick="setLevel('A1')" id="btnA1" class="active">A1 ДАРАЖА</button>
-            <button onclick="setLevel('A2')" id="btnA2">A2 ДАРАЖА</button>
+            <button onclick="setLevel('A1')" id="btnA1" class="active">A1</button>
+            <button onclick="setLevel('A2')" id="btnA2">A2</button>
         </div>
         
         <div class="card" onclick="showTranslation()">
-            <div class="level-tag" id="lvlTagDisplay">A1</div>
             <button class="audio-btn" onclick="playAudio(event)">🔊</button>
             <h1 id="deWordDisplay">Lernen</h1>
             <div class="uzbek" id="uzWordDisplay">ЎРГАНМОҚ</div>
-            <p id="hintText" style="color: #adb5bd; font-size: 13px; margin-top: 15px;">Таржима учун босинг</p>
+            <p id="hintText" style="color: #adb5bd; font-size: 12px; margin-top: 15px;">Таржима учун босинг</p>
         </div>
         
-        <button class="next-btn" onclick="nextWord()">Кейинги сўз ➔</button>
+        <button class="next-btn" onclick="handleNext()">Кейинги сўз ➔</button>
     </div>
 
     <div id="gameSection" style="width: 100%; display: none; flex-direction: column; align-items: center;">
-        <div class="quiz-card">
-            <p style="color:#6c757d; font-weight: bold; margin:0;">Тўғри таржимани танланг:</p>
-            <h2 id="quizQuestion" style="font-size: 34px; margin: 20px 0; color: var(--de-black);">...</h2>
-            <div class="options" id="quizOptions"></div>
+        <div style="background:white; padding:30px; border-radius:20px; text-align:center; width:90%;">
+            <h2 id="quizQ">...</h2>
+            <div id="quizOptions" style="display:grid; gap:10px;"></div>
         </div>
-        <button class="next-btn" onclick="startQuiz()" style="background: var(--de-black);">Янги савол ↻</button>
     </div>
 
     <script>
@@ -83,31 +88,47 @@
         const dictionary = {
             'A1': [
                 {g: "Brot", u: "NON"}, {g: "Wasser", u: "SUV"}, {g: "Milch", u: "SUT"},
-                {g: "Schule", u: "MAKTAB"}, {g: "Lehrer", u: "O'QITUVCHI"}, {g: "Buch", u: "KITOB"},
-                {g: "Essen", u: "YEMOQ"}, {g: "Trinken", u: "ICHMOQ"}, {g: "Schlafen", u: "UXLAMOQ"}
+                {g: "Schule", u: "MAKTAB"}, {g: "Lehrer", u: "O'QITUVCHI"}, {g: "Buch", u: "KITOB"}
             ],
             'A2': [
-                {g: "Verstehen", u: "TUSHUNMOQ"}, {g: "Vergessen", u: "UNUTMOQ"}, {g: "Besuchen", u: "ZIYORAT QILMOQ"},
-                {g: "Erklären", u: "TUSHUNTIRMOQ"}, {g: "Wichtig", u: "MUHIM"}, {g: "Reisen", u: "SAYOHAT QILMOQ"}
+                {g: "Verstehen", u: "TUSHUNMOQ"}, {g: "Vergessen", u: "UNUTMOQ"}, {g: "Wichtig", u: "MUHIM"}
             ]
         };
 
+        let dailyGoal = 6;
+        let wordsSeen = 0;
         let currentLevel = 'A1';
+
+        function setGoal(num, btn) {
+            dailyGoal = num;
+            document.querySelectorAll('.goal-btns button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('goalText').innerText = num;
+            updateProgress();
+        }
+
+        function handleNext() {
+            wordsSeen++;
+            updateProgress();
+            nextWord();
+        }
+
+        function updateProgress() {
+            let percent = (wordsSeen / dailyGoal) * 100;
+            if(percent > 100) percent = 100;
+            document.getElementById('progressFill').style.width = percent + "%";
+            document.getElementById('progressText').innerText = wordsSeen;
+            
+            if(wordsSeen >= dailyGoal) {
+                document.getElementById('congratsMsg').style.display = 'block';
+            }
+        }
 
         function setLevel(lvl) {
             currentLevel = lvl;
             document.querySelectorAll('.level-selector button').forEach(b => b.classList.remove('active'));
             document.getElementById('btn' + lvl).classList.add('active');
-            document.getElementById('lvlTagDisplay').innerText = lvl;
             nextWord();
-        }
-
-        function showSection(sec) {
-            document.getElementById('learnSection').style.display = sec === 'learn' ? 'flex' : 'none';
-            document.getElementById('gameSection').style.display = sec === 'game' ? 'flex' : 'none';
-            document.getElementById('tabLearn').classList.toggle('active', sec === 'learn');
-            document.getElementById('tabGame').classList.toggle('active', sec === 'game');
-            if(sec === 'game') startQuiz();
         }
 
         function showTranslation() {
@@ -132,35 +153,14 @@
             window.speechSynthesis.speak(utterance);
         }
 
-        function startQuiz() {
-            let allWords = [...dictionary['A1'], ...dictionary['A2']];
-            let correctItem = allWords[Math.floor(Math.random() * allWords.length)];
-            document.getElementById('quizQuestion').innerText = correctItem.g;
-            
-            let options = [correctItem.u];
-            while(options.length < 4) {
-                let randomU = allWords[Math.floor(Math.random() * allWords.length)].u;
-                if(!options.includes(randomU)) options.push(randomU);
-            }
-            options.sort(() => Math.random() - 0.5);
-
-            let optionsHtml = '';
-            options.forEach(opt => {
-                optionsHtml += `<button class="option-btn" onclick="checkAnswer(this, '${opt}', '${correctItem.u}')">${opt}</button>`;
-            });
-            document.getElementById('quizOptions').innerHTML = optionsHtml;
-        }
-
-        function checkAnswer(btn, selected, correct) {
-            if(selected === correct) {
-                btn.classList.add('correct');
-                setTimeout(startQuiz, 1000);
-            } else {
-                btn.classList.add('wrong');
-            }
+        function showSection(sec) {
+            document.getElementById('learnSection').style.display = sec === 'learn' ? 'flex' : 'none';
+            document.getElementById('gameSection').style.display = sec === 'game' ? 'flex' : 'none';
+            document.getElementById('goalBlock').style.display = sec === 'learn' ? 'block' : 'none';
         }
 
         nextWord();
+        document.getElementById('goal6').classList.add('active');
     </script>
 </body>
 </html>
