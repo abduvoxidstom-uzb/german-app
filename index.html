@@ -3,50 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deutsch Pro - Abduvoxid</title>
+    <title>Deutsch Pro - Родлар билан</title>
+    <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         :root { --de-green: #28a745; --de-gold: #FFCC00; --de-black: #2c3e50; --bg: #f0f2f5; }
         body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
         
-        /* Кунлик мақсад ва Прогресс */
+        /* Родлар учун ранглар */
+        .der { color: #007bff; } /* Кўк */
+        .die { color: #dc3545; } /* Қизил */
+        .das { color: #28a745; } /* Яшил */
+
         .goal-card { background: white; width: 95%; max-width: 400px; padding: 15px; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
-        .goal-btns { display: flex; gap: 5px; margin: 10px 0; }
-        .goal-btns button { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 8px; background: #fff; font-weight: bold; font-size: 12px; }
-        .goal-btns button.active { background: var(--de-black); color: white; }
         .p-bar { background: #eee; height: 10px; border-radius: 10px; margin: 10px 0; overflow: hidden; }
         .p-fill { background: var(--de-green); width: 0%; height: 100%; transition: 0.3s; }
 
-        /* Таблар ва Даражалар */
         .nav-tabs, .lvl-tabs { display: flex; gap: 8px; width: 100%; max-width: 400px; margin-bottom: 10px; }
         .nav-tabs button, .lvl-tabs button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
         .nav-tabs button.active { background: var(--de-black); color: white; }
         .lvl-tabs button { background: white; border: 2px solid var(--de-black); color: var(--de-black); }
         .lvl-tabs button.active { background: var(--de-black); color: white; }
 
-        /* Карточка */
-        .main-card { background: white; width: 95%; max-width: 380px; border-radius: 25px; padding: 40px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; border-bottom: 8px solid var(--de-gold); margin-top: 10px; position: relative; }
+        .main-card { background: white; width: 95%; max-width: 380px; border-radius: 25px; padding: 40px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; border-bottom: 8px solid var(--de-gold); margin-top: 10px; }
         .audio-icon { font-size: 30px; background: #f8f9fa; border: 2px solid var(--de-gold); border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; cursor: pointer; }
-        h1 { font-size: 40px; color: var(--de-black); margin: 10px 0; font-weight: 800; }
+        
+        h1 { font-size: 40px; margin: 10px 0; font-weight: 800; }
         .uz-text { font-size: 28px; color: #000; margin-top: 15px; display: none; border-top: 3px solid #eee; padding-top: 15px; font-weight: 900; }
         
-        .next-btn { background: var(--de-green); color: white; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 15px; cursor: pointer; box-shadow: 0 4px 12px rgba(40,167,69,0.3); }
-
-        .quiz-opt { display: grid; gap: 10px; margin-top: 20px; }
-        .opt-btn { padding: 15px; border: 2px solid #eee; border-radius: 12px; background: white; font-weight: bold; }
+        .next-btn { background: var(--de-green); color: white; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="goal-card" id="goalSection">
-        <div style="font-weight: 900; font-size: 14px;">КУНЛИК МАҚСАД</div>
-        <div class="goal-btns">
-            <button onclick="changeGoal(6, this)" class="active">6 ТА</button>
-            <button onclick="changeGoal(20, this)">20 ТА</button>
-            <button onclick="changeGoal(40, this)">40 ТА</button>
-        </div>
+    <div class="goal-card">
+        <div style="font-weight: 900; font-size: 14px;">ПРОГРЕСС</div>
         <div class="p-bar"><div class="p-fill" id="pFill"></div></div>
-        <div style="font-weight: bold; font-size: 13px;">ПРОГРЕСС: <span id="pCount">0</span> / <span id="pGoal">6</span></div>
+        <div style="font-weight: bold; font-size: 13px;"><span id="pCount">0</span> / <span id="pGoal">6</span></div>
     </div>
 
     <div class="nav-tabs">
@@ -56,8 +49,8 @@
 
     <div id="learnPage" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
         <div class="lvl-tabs">
-            <button onclick="setLvl('A1')" id="btnA1" class="active">A1 Даража</button>
-            <button onclick="setLvl('A2')" id="btnA2">A2 Даража</button>
+            <button onclick="setLvl('A1')" id="btnA1" class="active">A1</button>
+            <button onclick="setLvl('A2')" id="btnA2">A2</button>
         </div>
         <div class="main-card" onclick="document.getElementById('uzW').style.display='block'">
             <div class="audio-icon" onclick="playDE(event)">🔊</div>
@@ -68,28 +61,29 @@
         <button class="next-btn" onclick="next()">КЕЙИНГИ СЎЗ ➔</button>
     </div>
 
-    <div id="gamePage" style="width: 100%; display: none; flex-direction: column; align-items: center;">
-        <div class="main-card">
-            <h2 id="qQ">?</h2>
-            <div class="quiz-opt" id="qO"></div>
-        </div>
-        <button class="next-btn" onclick="startQuiz()" style="background:#000;">ЯНГИ САВОЛ ↻</button>
-    </div>
-
     <script>
         let tg = window.Telegram.WebApp; tg.expand();
+        // Сўзлар базаси роди билан
         const words = {
-            'A1': [{g: "Brot", u: "NON"}, {g: "Wasser", u: "SUV"}, {g: "Tisch", u: "STOL"}, {g: "Milch", u: "SUT"}],
-            'A2': [{g: "Wichtig", u: "MUHIM"}, {g: "Besuchen", u: "ZIYORAT QILMOQ"}]
+            'A1': [
+                {g: "der Tisch", u: "STOL", r: "der"}, 
+                {g: "die Schule", u: "MAKTAB", r: "die"}, 
+                {g: "das Buch", u: "KITOB", r: "das"},
+                {g: "der Apfel", u: "OLMA", r: "der"},
+                {g: "die Mutter", u: "ONA", r: "die"}
+            ],
+            'A2': [
+                {g: "der Beruf", u: "KASB", r: "der"}, 
+                {g: "die Erfahrung", u: "TAJRIBA", r: "die"}, 
+                {g: "das Ergebnis", u: "NATIJA", r: "das"}
+            ]
         };
         let curLvl = 'A1', curGoal = 6, seen = 0;
 
         function playDE(e) {
             if(e) e.stopPropagation();
             let text = document.getElementById('deW').innerText;
-            let msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'de-DE';
-            window.speechSynthesis.speak(msg);
+            responsiveVoice.speak(text, "Deutsch Female");
         }
 
         function setLvl(l) {
@@ -99,20 +93,15 @@
             next(false);
         }
 
-        function switchTab(t) {
-            document.getElementById('learnPage').style.display = t==='learn'?'flex':'none';
-            document.getElementById('gamePage').style.display = t==='game'?'flex':'none';
-            document.getElementById('goalSection').style.display = t==='learn'?'block':'none';
-            document.getElementById('tabL').classList.toggle('active', t==='learn');
-            document.getElementById('tabG').classList.toggle('active', t==='game');
-            if(t==='game') startQuiz();
-        }
-
         function next(inc=true) {
             if(inc) { seen++; updateP(); }
             let list = words[curLvl];
             let item = list[Math.floor(Math.random()*list.length)];
-            document.getElementById('deW').innerText = item.g;
+            
+            let deEl = document.getElementById('deW');
+            deEl.innerText = item.g;
+            deEl.className = item.r; // Рангини ўзгартириш
+            
             document.getElementById('uzW').innerText = item.u;
             document.getElementById('uzW').style.display = 'none';
         }
@@ -123,33 +112,7 @@
             document.getElementById('pCount').innerText = seen;
         }
 
-        function changeGoal(n, b) {
-            curGoal = n;
-            document.querySelectorAll('.goal-btns button').forEach(x => x.classList.remove('active'));
-            b.classList.add('active');
-            document.getElementById('pGoal').innerText = n;
-            updateP();
-        }
-
-        function startQuiz() {
-            let all = [...words.A1, ...words.A2];
-            let c = all[Math.floor(Math.random()*all.length)];
-            document.getElementById('qQ').innerText = c.g;
-            let opts = [c.u];
-            while(opts.length<4) {
-                let r = all[Math.floor(Math.random()*all.length)].u;
-                if(!opts.includes(r)) opts.push(r);
-            }
-            opts.sort(()=>Math.random()-0.5);
-            document.getElementById('qO').innerHTML = opts.map(o => `<button class="opt-btn" onclick="this.style.background= ('${o}'==='${c.u}'?'#d4edda':'#f8d7da')">${o}</button>`).join('');
-        }
-
-        // Овоз ишлаши учун фойдаланувчи биринчи марта босганда активлаштириш
-        document.body.addEventListener('click', () => {
-            const silent = new SpeechSynthesisUtterance("");
-            window.speechSynthesis.speak(silent);
-        }, { once: true });
-
+        document.body.addEventListener('click', () => { responsiveVoice.init(); }, { once: true });
         next(false);
     </script>
 </body>
