@@ -3,117 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deutsch Pro - Родлар билан</title>
+    <title>Deutsch Anki - Abduvoxid</title>
     <script src="https://code.responsivevoice.org/responsivevoice.js"></script>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root { --de-green: #28a745; --de-gold: #FFCC00; --de-black: #2c3e50; --bg: #f0f2f5; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 10px; }
+        :root { --de-green: #28a745; --de-gold: #FFCC00; --de-black: #2c3e50; --bg: #f8f9fa; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; padding: 15px; }
         
-        /* Родлар учун ранглар */
+        /* Родлар учун Anki ранглари */
         .der { color: #007bff; } /* Кўк */
         .die { color: #dc3545; } /* Қизил */
         .das { color: #28a745; } /* Яшил */
 
-        .goal-card { background: white; width: 95%; max-width: 400px; padding: 15px; border-radius: 15px; margin-bottom: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; }
-        .p-bar { background: #eee; height: 10px; border-radius: 10px; margin: 10px 0; overflow: hidden; }
-        .p-fill { background: var(--de-green); width: 0%; height: 100%; transition: 0.3s; }
+        /* Статистика блоки */
+        .stats-card { background: white; width: 100%; max-width: 400px; padding: 15px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); text-align: center; border: 1px solid #eee; }
+        .stats-num { font-size: 20px; font-weight: 900; color: var(--de-green); }
 
-        .nav-tabs, .lvl-tabs { display: flex; gap: 8px; width: 100%; max-width: 400px; margin-bottom: 10px; }
-        .nav-tabs button, .lvl-tabs button { flex: 1; padding: 12px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; }
-        .nav-tabs button.active { background: var(--de-black); color: white; }
-        .lvl-tabs button { background: white; border: 2px solid var(--de-black); color: var(--de-black); }
+        .lvl-tabs { display: flex; gap: 8px; width: 100%; max-width: 400px; margin-bottom: 15px; }
+        .lvl-tabs button { flex: 1; padding: 12px; border: 2px solid var(--de-black); border-radius: 12px; background: white; font-weight: 800; cursor: pointer; transition: 0.2s; }
         .lvl-tabs button.active { background: var(--de-black); color: white; }
 
-        .main-card { background: white; width: 95%; max-width: 380px; border-radius: 25px; padding: 40px 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); text-align: center; border-bottom: 8px solid var(--de-gold); margin-top: 10px; }
-        .audio-icon { font-size: 30px; background: #f8f9fa; border: 2px solid var(--de-gold); border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin: 0 auto 15px; cursor: pointer; }
+        /* Anki Карточкаси */
+        .anki-card { background: white; width: 100%; max-width: 380px; border-radius: 30px; padding: 50px 20px; box-shadow: 0 15px 35px rgba(0,0,0,0.1); text-align: center; border-bottom: 10px solid var(--de-gold); cursor: pointer; min-height: 250px; display: flex; flex-direction: column; justify-content: center; }
         
-        h1 { font-size: 40px; margin: 10px 0; font-weight: 800; }
-        .uz-text { font-size: 28px; color: #000; margin-top: 15px; display: none; border-top: 3px solid #eee; padding-top: 15px; font-weight: 900; }
+        .audio-btn { font-size: 35px; background: #f0f2f5; border: 2px solid var(--de-gold); border-radius: 50%; width: 70px; height: 70px; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
         
-        .next-btn { background: var(--de-green); color: white; border: none; padding: 20px; width: 100%; max-width: 400px; border-radius: 15px; font-size: 18px; font-weight: bold; margin-top: 15px; cursor: pointer; }
+        h1 { font-size: 45px; margin: 10px 0; font-weight: 800; }
+        .uz-translate { font-size: 32px; color: #000; margin-top: 20px; display: none; border-top: 4px solid #f8f9fa; padding-top: 20px; font-weight: 900; text-transform: uppercase; }
+        
+        .hint { color: #adb5bd; font-size: 14px; margin-top: 15px; font-weight: bold; }
+
+        .next-btn { background: var(--de-green); color: white; border: none; padding: 22px; width: 100%; max-width: 400px; border-radius: 20px; font-size: 22px; font-weight: 900; margin-top: 25px; cursor: pointer; box-shadow: 0 8px 20px rgba(40,167,69,0.3); }
     </style>
 </head>
 <body>
 
-    <div class="goal-card">
-        <div style="font-weight: 900; font-size: 14px;">ПРОГРЕСС</div>
-        <div class="p-bar"><div class="p-fill" id="pFill"></div></div>
-        <div style="font-weight: bold; font-size: 13px;"><span id="pCount">0</span> / <span id="pGoal">6</span></div>
+    <div class="stats-card">
+        <div style="font-size: 12px; font-weight: bold; color: #666;">БУГУН КЎРИЛГАН СЎЗЛАР</div>
+        <div class="stats-num" id="totalSeen">0</div>
     </div>
 
-    <div class="nav-tabs">
-        <button onclick="switchTab('learn')" id="tabL" class="active">📖 ЎРГАНИШ</button>
-        <button onclick="switchTab('game')" id="tabG">🎮 ЎЙИН</button>
+    <div class="lvl-tabs">
+        <button onclick="changeLevel('A1')" id="lA1" class="active">A1</button>
+        <button onclick="changeLevel('A2')" id="lA2">A2</button>
+        <button onclick="changeLevel('B1')" id="lB1">B1</button>
     </div>
 
-    <div id="learnPage" style="width: 100%; display: flex; flex-direction: column; align-items: center;">
-        <div class="lvl-tabs">
-            <button onclick="setLvl('A1')" id="btnA1" class="active">A1</button>
-            <button onclick="setLvl('A2')" id="btnA2">A2</button>
-        </div>
-        <div class="main-card" onclick="document.getElementById('uzW').style.display='block'">
-            <div class="audio-icon" onclick="playDE(event)">🔊</div>
-            <h1 id="deW">Lernen</h1>
-            <div class="uz-text" id="uzW">ЎРГАНМОҚ</div>
-            <p style="color:#999; font-size:12px; margin-top:10px;">Таржима учун босинг</p>
-        </div>
-        <button class="next-btn" onclick="next()">КЕЙИНГИ СЎЗ ➔</button>
+    <div class="anki-card" onclick="showAnswer()">
+        <div class="audio-btn" onclick="sayIt(event)">🔊</div>
+        <h1 id="germanWord" class="der">Lernen</h1>
+        <div class="uz-translate" id="uzWord">ЎРГАНМОҚ</div>
+        <div class="hint" id="hintText">Таржима учун босинг</div>
     </div>
+
+    <button class="next-btn" onclick="nextCard()">КЕЙИНГИ ➔</button>
 
     <script>
         let tg = window.Telegram.WebApp; tg.expand();
-        // Сўзлар базаси роди билан
-        const words = {
+        
+        const database = {
             'A1': [
                 {g: "der Tisch", u: "STOL", r: "der"}, 
                 {g: "die Schule", u: "MAKTAB", r: "die"}, 
                 {g: "das Buch", u: "KITOB", r: "das"},
-                {g: "der Apfel", u: "OLMA", r: "der"},
-                {g: "die Mutter", u: "ONA", r: "die"}
+                {g: "der Vater", u: "OTA", r: "der"},
+                {g: "die Hand", u: "QO'L", r: "die"}
             ],
             'A2': [
-                {g: "der Beruf", u: "KASB", r: "der"}, 
-                {g: "die Erfahrung", u: "TAJRIBA", r: "die"}, 
-                {g: "das Ergebnis", u: "NATIJA", r: "das"}
+                {g: "der Urlaub", u: "TA'TIL", r: "der"},
+                {g: "die Reise", u: "SAYOHAT", r: "die"},
+                {g: "das Wetter", u: "OB-HAVO", r: "das"}
+            ],
+            'B1': [
+                {g: "die Entscheidung", u: "QAROR", r: "die"},
+                {g: "der Unterschied", u: "FARQ", r: "der"}
             ]
         };
-        let curLvl = 'A1', curGoal = 6, seen = 0;
 
-        function playDE(e) {
+        let currentLevel = 'A1';
+        let count = 0;
+
+        function changeLevel(lvl) {
+            currentLevel = lvl;
+            document.querySelectorAll('.lvl-tabs button').forEach(b => b.classList.remove('active'));
+            document.getElementById('l' + lvl).classList.add('active');
+            nextCard(false);
+        }
+
+        function showAnswer() {
+            document.getElementById('uzWord').style.display = 'block';
+            document.getElementById('hintText').style.display = 'none';
+        }
+
+        function nextCard(isNew = true) {
+            if(isNew) {
+                count++;
+                document.getElementById('totalSeen').innerText = count;
+            }
+            
+            let list = database[currentLevel];
+            let item = list[Math.floor(Math.random() * list.length)];
+            
+            let gW = document.getElementById('germanWord');
+            gW.innerText = item.g;
+            gW.className = item.r; // Ранг бериш
+            
+            document.getElementById('uzWord').innerText = item.u;
+            document.getElementById('uzWord').style.display = 'none';
+            document.getElementById('hintText').style.display = 'block';
+        }
+
+        function sayIt(e) {
             if(e) e.stopPropagation();
-            let text = document.getElementById('deW').innerText;
+            let text = document.getElementById('germanWord').innerText;
             responsiveVoice.speak(text, "Deutsch Female");
         }
 
-        function setLvl(l) {
-            curLvl = l;
-            document.querySelectorAll('.lvl-tabs button').forEach(b => b.classList.remove('active'));
-            document.getElementById('btn'+l).classList.add('active');
-            next(false);
-        }
-
-        function next(inc=true) {
-            if(inc) { seen++; updateP(); }
-            let list = words[curLvl];
-            let item = list[Math.floor(Math.random()*list.length)];
-            
-            let deEl = document.getElementById('deW');
-            deEl.innerText = item.g;
-            deEl.className = item.r; // Рангини ўзгартириш
-            
-            document.getElementById('uzW').innerText = item.u;
-            document.getElementById('uzW').style.display = 'none';
-        }
-
-        function updateP() {
-            let p = Math.min((seen/curGoal)*100, 100);
-            document.getElementById('pFill').style.width = p+"%";
-            document.getElementById('pCount').innerText = seen;
-        }
-
+        // Илк фаоллаштириш
         document.body.addEventListener('click', () => { responsiveVoice.init(); }, { once: true });
-        next(false);
+        nextCard(false);
     </script>
 </body>
 </html>
